@@ -22483,12 +22483,22 @@
 	
 	var _location_actions = __webpack_require__(193);
 	
+	var _location_util = __webpack_require__(219);
+	
 	var LocationMiddleware = function LocationMiddleware(_ref) {
 	  var getState = _ref.getState;
 	  var dispatch = _ref.dispatch;
 	  return function (next) {
 	    return function (action) {
+	      var success = void 0;
 	      switch (action.type) {
+	        case _location_actions.LOCATION_CONSTANTS.REQUEST_LOCATIONS:
+	          success = function success(locations) {
+	            return dispatch((0, _location_actions.receiveLocations)(locations));
+	          };
+	          var filters = getState().filters;
+	          (0, _location_util.fetchLocations)(filters, success);
+	          break;
 	        default:
 	          return next(action);
 	      }
@@ -22516,7 +22526,11 @@
 	  var state = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
 	  var action = arguments[1];
 	
+	  var newState = void 0;
 	  switch (action.type) {
+	    case _location_actions.LOCATION_CONSTANTS.RECEIVE_LOCATIONS:
+	      newState = action.locations;
+	      return newState;
 	    default:
 	      return state;
 	  }
@@ -22533,7 +22547,23 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var LOCATION_CONSTANTS = exports.LOCATION_CONSTANTS = {};
+	var LOCATION_CONSTANTS = exports.LOCATION_CONSTANTS = {
+	  REQUEST_LOCATIONS: "REQUEST_LOCATIONS",
+	  RECEIVE_LOCATIONS: "RECEIVE_LOCATIONS"
+	};
+	
+	var requestLocations = exports.requestLocations = function requestLocations() {
+	  return {
+	    type: LOCATION_CONSTANTS.REQUEST_LOCATIONS
+	  };
+	};
+	
+	var receiveLocations = exports.receiveLocations = function receiveLocations(locations) {
+	  return {
+	    type: LOCATION_CONSTANTS.RECEIVE_LOCATIONS,
+	    locations: locations
+	  };
+	};
 
 /***/ },
 /* 194 */
@@ -40229,6 +40259,8 @@
 	
 	var _form2 = _interopRequireDefault(_form);
 	
+	var _filter_actions = __webpack_require__(217);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var mapStateToProps = function mapStateToProps(state) {
@@ -40236,10 +40268,17 @@
 	};
 	
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-	  return {};
+	  return {
+	    updateFilters: function updateFilters(filters) {
+	      return dispatch((0, _filter_actions.updateFilters)(filters));
+	    },
+	    clearFilters: function clearFilters() {
+	      return dispatch((0, _filter_actions.clearFilters)());
+	    }
+	  };
 	};
 	
-	exports.default = (0, _reactRedux.connect)(null, null)(_form2.default);
+	exports.default = (0, _reactRedux.connect)(null, mapDispatchToProps)(_form2.default);
 
 /***/ },
 /* 212 */
@@ -40257,23 +40296,34 @@
 	
 	var _map2 = _interopRequireDefault(_map);
 	
+	var _location_actions = __webpack_require__(193);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var mapStateToProps = function mapStateToProps(state) {
-	  return {};
+	  return {
+	    locations: state.locations
+	  };
 	};
+	// import { updateBounds } from '../actions/filter_actions';
+	
 	
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
-	  return {};
+	  return {
+	    requestLocations: function requestLocations() {
+	      return dispatch((0, _location_actions.requestLocations)());
+	    }
+	    // updateBounds: (bounds) => dispatch(updateBounds(bounds))
+	  };
 	};
 	
-	exports.default = (0, _reactRedux.connect)(null, null)(_map2.default);
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_map2.default);
 
 /***/ },
 /* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -40299,16 +40349,122 @@
 	  function Form(props) {
 	    _classCallCheck(this, Form);
 	
-	    return _possibleConstructorReturn(this, (Form.__proto__ || Object.getPrototypeOf(Form)).call(this, props));
+	    var _this = _possibleConstructorReturn(this, (Form.__proto__ || Object.getPrototypeOf(Form)).call(this, props));
+	
+	    _this.state = {
+	      title: "",
+	      release_year: "",
+	      director: "",
+	      actor: "",
+	      writer: "",
+	      company: "",
+	      distributor: ""
+	    };
+	    setInterval(function () {
+	      _this.timer++;
+	      if (_this.timer > 1000000000) {
+	        _this.timer = 0;
+	      }
+	    }, 5);
+	    _this.handleClear = _this.handleClear.bind(_this);
+	    _this.updateField = _this.updateField.bind(_this);
+	    return _this;
 	  }
 	
 	  _createClass(Form, [{
-	    key: 'render',
+	    key: "handleClear",
+	    value: function handleClear(e) {
+	      e.preventDefault();
+	      this.setState({
+	        title: "",
+	        release_year: "",
+	        director: "",
+	        actor: "",
+	        writer: "",
+	        company: "",
+	        distributor: ""
+	      });
+	      this.props.clearFilters();
+	      this.timer = 0;
+	    }
+	  }, {
+	    key: "updateField",
+	    value: function updateField(e) {
+	      var _this2 = this;
+	
+	      var key = e.target.name;
+	      var updates = {};
+	      updates[key] = e.target.value;
+	      this.setState(updates, function () {
+	        // if (this.timer < 20) {
+	        _this2.timer = 0;
+	        setTimeout(function () {
+	          if (_this2.timer > 40) {
+	            _this2.props.updateFilters(_this2.state);
+	          }
+	        }, 210);
+	        // } else {
+	        // this.props.updateFilters(this.state);
+	        // }
+	      });
+	    }
+	  }, {
+	    key: "render",
 	    value: function render() {
 	      return _react2.default.createElement(
-	        'div',
-	        null,
-	        'Form'
+	        "div",
+	        { className: "form-container" },
+	        _react2.default.createElement(
+	          "form",
+	          { className: "form" },
+	          _react2.default.createElement(
+	            "label",
+	            { className: "form-label" },
+	            "Search by Title:",
+	            _react2.default.createElement("input", { name: "title", type: "text", value: this.state.title, onChange: this.updateField })
+	          ),
+	          _react2.default.createElement(
+	            "label",
+	            { className: "form-label" },
+	            "Search by Release Year:",
+	            _react2.default.createElement("input", { name: "release_year", type: "number", value: this.state.release_year, onChange: this.updateField })
+	          ),
+	          _react2.default.createElement(
+	            "label",
+	            { className: "form-label" },
+	            "Search by Director:",
+	            _react2.default.createElement("input", { name: "director", type: "text", value: this.state.director, onChange: this.updateField })
+	          ),
+	          _react2.default.createElement(
+	            "label",
+	            { className: "form-label" },
+	            "Search by Actor:",
+	            _react2.default.createElement("input", { name: "actor", type: "text", value: this.state.actor, onChange: this.updateField })
+	          ),
+	          _react2.default.createElement(
+	            "label",
+	            { className: "form-label" },
+	            "Search by Writer:",
+	            _react2.default.createElement("input", { name: "writer", type: "text", value: this.state.writer, onChange: this.updateField })
+	          ),
+	          _react2.default.createElement(
+	            "label",
+	            { className: "form-label" },
+	            "Search by Production Company:",
+	            _react2.default.createElement("input", { name: "company", type: "text", value: this.state.company, onChange: this.updateField })
+	          ),
+	          _react2.default.createElement(
+	            "label",
+	            { className: "form-label" },
+	            "Search by Distributor:",
+	            _react2.default.createElement("input", { name: "distributor", type: "text", value: this.state.distributor, onChange: this.updateField })
+	          ),
+	          _react2.default.createElement(
+	            "button",
+	            { onClick: this.handleClear },
+	            "Clear Filters"
+	          )
+	        )
 	      );
 	    }
 	  }]);
@@ -40334,7 +40490,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _marker_manager = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../utils/marker_manager\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _marker_manager = __webpack_require__(218);
 	
 	var _marker_manager2 = _interopRequireDefault(_marker_manager);
 	
@@ -40358,23 +40514,22 @@
 	  _createClass(Map, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      var _this2 = this;
-	
 	      var mapEl = document.getElementById('map');
 	      var options = {
 	        center: { lat: 37.760030, lng: -122.445329 },
 	        zoom: 11
 	      };
+	      this.props.requestLocations();
 	      this.map = new google.maps.Map(mapEl, options);
 	      this.markerManager = new _marker_manager2.default(this.map);
 	      this.markerManager.updateMarkers(this.props.locations);
-	      this.map.addListener('idle', function () {
-	        var bounds = _this2.map.getBounds();
-	        var ne = { lat: bounds.getNorthEast().lat(), lng: bounds.getNorthEast().lng() };
-	        var sw = { lat: bounds.getSouthWest().lat(), lng: bounds.getSouthWest().lng() };
-	        bounds = { northEast: ne, southWest: sw };
-	        _this2.props.updateBounds(bounds);
-	      });
+	      // this.map.addListener('idle', () => {
+	      //   let bounds = this.map.getBounds();
+	      //   let ne = {lat: bounds.getNorthEast().lat(), lng: bounds.getNorthEast().lng()};
+	      //   let sw = {lat: bounds.getSouthWest().lat(), lng: bounds.getSouthWest().lng()};
+	      //   bounds = {northEast: ne, southWest: sw};
+	      //   this.props.updateBounds(bounds);
+	      // });
 	    }
 	  }, {
 	    key: 'componentDidUpdate',
@@ -40407,11 +40562,35 @@
 	
 	var _lodash = __webpack_require__(194);
 	
+	var defaultState = {
+	  // bounds: {
+	  //   southWest: {
+	  //     lat: 37.686859,
+	  //     lng: -122.544045
+	  //   },
+	  //   northEast: {
+	  //     lat: 37.834784,
+	  //     lng: -122.344575
+	  //   }
+	  // }
+	};
+	
 	var FilterReducer = function FilterReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+	  var state = arguments.length <= 0 || arguments[0] === undefined ? defaultState : arguments[0];
 	  var action = arguments[1];
 	
+	  var newState = void 0;
 	  switch (action.type) {
+	    case _filter_actions.FILTER_CONSTANTS.UPDATE_FILTERS:
+	      newState = action.filters;
+	      return newState;
+	    case _filter_actions.FILTER_CONSTANTS.CLEAR_FILTERS:
+	      newState = defaultState;
+	      return newState;
+	    // case FILTER_CONSTANTS.UPDATE_BOUNDS:
+	    //   newState = merge({}, state);
+	    //   newState.bounds = action.bounds;
+	    //   return newState;
 	    default:
 	      return state;
 	  }
@@ -40431,12 +40610,26 @@
 	
 	var _filter_actions = __webpack_require__(217);
 	
+	var _location_actions = __webpack_require__(193);
+	
 	var FilterMiddleware = function FilterMiddleware(_ref) {
 	  var getState = _ref.getState;
 	  var dispatch = _ref.dispatch;
 	  return function (next) {
 	    return function (action) {
 	      switch (action.type) {
+	        // case FILTER_CONSTANTS.UPDATE_BOUNDS:
+	        //   next(action);
+	        //   dispatch(requestLocations());
+	        //   break;
+	        case _filter_actions.FILTER_CONSTANTS.UPDATE_FILTERS:
+	          next(action);
+	          dispatch((0, _location_actions.requestLocations)());
+	          break;
+	        case _filter_actions.FILTER_CONSTANTS.CLEAR_FILTERS:
+	          next(action);
+	          dispatch((0, _location_actions.requestLocations)());
+	          break;
 	        default:
 	          return next(action);
 	      }
@@ -40455,7 +40648,199 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var FILTER_CONSTANTS = exports.FILTER_CONSTANTS = {};
+	var FILTER_CONSTANTS = exports.FILTER_CONSTANTS = {
+	  // UPDATE_BOUNDS: "UPDATE_BOUNDS"
+	  UPDATE_FILTERS: "UPDATE_FILTERS",
+	  CLEAR_FILTERS: "CLEAR_FILTERS"
+	};
+	
+	var updateFilters = exports.updateFilters = function updateFilters(filters) {
+	  return {
+	    type: FILTER_CONSTANTS.UPDATE_FILTERS,
+	    filters: filters
+	  };
+	};
+	
+	var clearFilters = exports.clearFilters = function clearFilters() {
+	  return {
+	    type: FILTER_CONSTANTS.CLEAR_FILTERS
+	  };
+	};
+	
+	// export const updateBounds = (bounds) => ({
+	//   type: FILTER_CONSTANTS.UPDATE_BOUNDS,
+	//   bounds
+	// });
+
+/***/ },
+/* 218 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var MarkerManager = function () {
+	  function MarkerManager(map) {
+	    _classCallCheck(this, MarkerManager);
+	
+	    this.map = map;
+	    this.markers = [];
+	    this.infoWindow = new google.maps.InfoWindow();
+	    this.placeService = new google.maps.places.PlacesService(this.map);
+	  }
+	
+	  _createClass(MarkerManager, [{
+	    key: "updateMarkers",
+	    value: function updateMarkers(locations) {
+	      var _this = this;
+	
+	      var toAdd = this._locationsToAdd(locations);
+	      toAdd.forEach(function (location) {
+	        _this._createMarkerFromLocation(location);
+	      });
+	      var toRemove = this._locationsToRemove(locations);
+	      toRemove.forEach(function (marker) {
+	        _this._removeMarker(marker);
+	      });
+	    }
+	  }, {
+	    key: "_locationsToAdd",
+	    value: function _locationsToAdd(locations) {
+	      var _this2 = this;
+	
+	      var toAdd = [];
+	      var add = void 0;
+	      locations.forEach(function (location) {
+	        add = true;
+	        _this2.markers.forEach(function (marker) {
+	          if (marker.locationid === location.id) {
+	            add = false;
+	          }
+	        });
+	        if (add) {
+	          toAdd.push(location);
+	        }
+	      });
+	      return toAdd;
+	    }
+	  }, {
+	    key: "_locationsToRemove",
+	    value: function _locationsToRemove(locations) {
+	      var toRemove = [];
+	      var remove = void 0;
+	      this.markers.forEach(function (marker) {
+	        remove = true;
+	        locations.forEach(function (location) {
+	          if (location.id === marker.locationid) {
+	            remove = false;
+	          }
+	        });
+	        if (remove) {
+	          toRemove.push(marker);
+	        }
+	      });
+	      return toRemove;
+	    }
+	  }, {
+	    key: "_createMarkerFromLocation",
+	    value: function _createMarkerFromLocation(location) {
+	      var _this3 = this;
+	
+	      var sw = new google.maps.LatLng(37.686859, -122.544045);
+	      var ne = new google.maps.LatLng(37.834784, -122.344575);
+	      var bounds = new google.maps.LatLngBounds(sw, ne);
+	      if (location.lat && location.lng) {
+	        (function () {
+	          var marker = new google.maps.Marker({
+	            position: { lat: location.lat, lng: location.lng },
+	            map: _this3.map,
+	            locationid: location.id
+	          });
+	          var content = "<div class='info-window'>\n        <h4>Site of '" + location.title + "'</h4>\n        <h5>Released " + location.release_year + "</h5>\n        <h5>Directed by " + location.director + "</h5>\n        <h5>Starring " + location.actor1 + " " + location.actor2 + " " + location.actor3 + "</h5>\n        <h5>Written by " + location.writer + "</h5>\n        <h5>Production company: " + location.company + "</h5>\n        <h5>Distributed by " + location.distributor + "</h5>\n      </div>";
+	          marker.addListener("click", function () {
+	            _this3.infoWindow.setContent(content);
+	            _this3.infoWindow.open(_this3.map, marker);
+	          });
+	          _this3.markers.push(marker);
+	        })();
+	      } else {
+	        this.placeService.textSearch({ input: location.location, bounds: bounds }, function (results, status) {
+	          if (status == google.maps.places.PlacesServiceStatus.OK) {
+	            results.forEach(function (result) {
+	              var lat = void 0;
+	              var lng = void 0;
+	              if (result.geometry.location.lat() < bounds.getNorthEast().lat() && result.geometry.location.lng() < bounds.getNorthEast().lng() && result.geometry.location.lat() > bounds.getSouthWest().lat() && result.geometry.location.lng() > bounds.getSouthWest().lng() && !lat && !lng) {
+	                lat = result.geometry.location.lat();
+	                lng = result.geometry.location.lng();
+	              }
+	              if (lat && lng) {
+	                (function () {
+	                  $.ajax({
+	                    url: "api/locations/" + location.id,
+	                    method: "PATCH",
+	                    data: { location: { lat: lat, lng: lng } }
+	                  });
+	                  var marker = new google.maps.Marker({
+	                    position: { lat: lat, lng: lng },
+	                    map: _this3.map,
+	                    locationid: location.id
+	                  });
+	                  var content = "<div class='info-window'>\n              <h4>Site of '" + location.title + "'</h4>\n              <h5>Released " + location.release_year + "</h5>\n              <h5>Directed by " + location.director + "</h5>\n              <h5>Starring " + location.actor1 + (", " + location.actor2) + (", " + location.actor3) + "</h5>\n              <h5>Written by " + location.writer + "</h5>\n              <h5>Production company: " + location.company + "</h5>\n              <h5>Distributed by " + location.distributor + "</h5>\n              </div>";
+	                  marker.addListener("click", function () {
+	                    _this3.infoWindow.setContent(content);
+	                    _this3.infoWindow.open(_this3.map, marker);
+	                  });
+	                  _this3.markers.push(marker);
+	                })();
+	              }
+	            });
+	          }
+	        });
+	      }
+	    }
+	  }, {
+	    key: "_removeMarker",
+	    value: function _removeMarker(marker) {
+	      marker.setMap(null);
+	      var removeIdx = void 0;
+	      this.markers.forEach(function (marker2, idx) {
+	        if (marker.locationid === marker2.locationid) {
+	          removeIdx = idx;
+	        }
+	      });
+	      this.markers = this.markers.slice(0, removeIdx).concat(this.markers.slice(removeIdx + 1));
+	    }
+	  }]);
+	
+	  return MarkerManager;
+	}();
+	
+	exports.default = MarkerManager;
+
+/***/ },
+/* 219 */
+/***/ function(module, exports) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var fetchLocations = exports.fetchLocations = function fetchLocations(filters, success) {
+	  $.ajax({
+	    url: 'api/locations',
+	    method: "GET",
+	    data: { filter: filters },
+	    success: success
+	  });
+	};
 
 /***/ }
 /******/ ]);
