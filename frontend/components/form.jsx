@@ -1,4 +1,5 @@
 import React from 'react';
+import { isEqual } from 'lodash';
 
 class Form extends React.Component {
   constructor(props) {
@@ -47,7 +48,20 @@ class Form extends React.Component {
         this.timer = 0;
         setTimeout(() => {
           if (this.timer > 40) {
-            this.props.updateFilters(this.state);
+            let testState = {
+              title: "",
+              release_year: "",
+              director: "",
+              actor: "",
+              writer: "",
+              company: "",
+              distributor: ""
+            }
+            if (isEqual(this.state, testState)) {
+              this.props.clearFilters();
+            } else {
+              this.props.updateFilters(this.state);
+            }
           }
         }, 210)
       // } else {

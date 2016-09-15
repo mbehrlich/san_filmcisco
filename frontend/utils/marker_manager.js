@@ -1,3 +1,5 @@
+
+
 class MarkerManager {
   constructor(map) {
     this.map = map;

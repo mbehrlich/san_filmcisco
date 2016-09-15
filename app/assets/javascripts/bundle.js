@@ -40323,7 +40323,7 @@
 /* 213 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -40334,6 +40334,8 @@
 	var _react = __webpack_require__(1);
 	
 	var _react2 = _interopRequireDefault(_react);
+	
+	var _lodash = __webpack_require__(194);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -40372,7 +40374,7 @@
 	  }
 	
 	  _createClass(Form, [{
-	    key: "handleClear",
+	    key: 'handleClear',
 	    value: function handleClear(e) {
 	      e.preventDefault();
 	      this.setState({
@@ -40388,7 +40390,7 @@
 	      this.timer = 0;
 	    }
 	  }, {
-	    key: "updateField",
+	    key: 'updateField',
 	    value: function updateField(e) {
 	      var _this2 = this;
 	
@@ -40400,7 +40402,20 @@
 	        _this2.timer = 0;
 	        setTimeout(function () {
 	          if (_this2.timer > 40) {
-	            _this2.props.updateFilters(_this2.state);
+	            var testState = {
+	              title: "",
+	              release_year: "",
+	              director: "",
+	              actor: "",
+	              writer: "",
+	              company: "",
+	              distributor: ""
+	            };
+	            if ((0, _lodash.isEqual)(_this2.state, testState)) {
+	              _this2.props.clearFilters();
+	            } else {
+	              _this2.props.updateFilters(_this2.state);
+	            }
 	          }
 	        }, 210);
 	        // } else {
@@ -40409,60 +40424,60 @@
 	      });
 	    }
 	  }, {
-	    key: "render",
+	    key: 'render',
 	    value: function render() {
 	      return _react2.default.createElement(
-	        "div",
-	        { className: "form-container" },
+	        'div',
+	        { className: 'form-container' },
 	        _react2.default.createElement(
-	          "form",
-	          { className: "form" },
+	          'form',
+	          { className: 'form' },
 	          _react2.default.createElement(
-	            "label",
-	            { className: "form-label" },
-	            "Search by Title:",
-	            _react2.default.createElement("input", { name: "title", type: "text", value: this.state.title, onChange: this.updateField })
+	            'label',
+	            { className: 'form-label' },
+	            'Search by Title:',
+	            _react2.default.createElement('input', { name: 'title', type: 'text', value: this.state.title, onChange: this.updateField })
 	          ),
 	          _react2.default.createElement(
-	            "label",
-	            { className: "form-label" },
-	            "Search by Release Year:",
-	            _react2.default.createElement("input", { name: "release_year", type: "number", value: this.state.release_year, onChange: this.updateField })
+	            'label',
+	            { className: 'form-label' },
+	            'Search by Release Year:',
+	            _react2.default.createElement('input', { name: 'release_year', type: 'number', value: this.state.release_year, onChange: this.updateField })
 	          ),
 	          _react2.default.createElement(
-	            "label",
-	            { className: "form-label" },
-	            "Search by Director:",
-	            _react2.default.createElement("input", { name: "director", type: "text", value: this.state.director, onChange: this.updateField })
+	            'label',
+	            { className: 'form-label' },
+	            'Search by Director:',
+	            _react2.default.createElement('input', { name: 'director', type: 'text', value: this.state.director, onChange: this.updateField })
 	          ),
 	          _react2.default.createElement(
-	            "label",
-	            { className: "form-label" },
-	            "Search by Actor:",
-	            _react2.default.createElement("input", { name: "actor", type: "text", value: this.state.actor, onChange: this.updateField })
+	            'label',
+	            { className: 'form-label' },
+	            'Search by Actor:',
+	            _react2.default.createElement('input', { name: 'actor', type: 'text', value: this.state.actor, onChange: this.updateField })
 	          ),
 	          _react2.default.createElement(
-	            "label",
-	            { className: "form-label" },
-	            "Search by Writer:",
-	            _react2.default.createElement("input", { name: "writer", type: "text", value: this.state.writer, onChange: this.updateField })
+	            'label',
+	            { className: 'form-label' },
+	            'Search by Writer:',
+	            _react2.default.createElement('input', { name: 'writer', type: 'text', value: this.state.writer, onChange: this.updateField })
 	          ),
 	          _react2.default.createElement(
-	            "label",
-	            { className: "form-label" },
-	            "Search by Production Company:",
-	            _react2.default.createElement("input", { name: "company", type: "text", value: this.state.company, onChange: this.updateField })
+	            'label',
+	            { className: 'form-label' },
+	            'Search by Production Company:',
+	            _react2.default.createElement('input', { name: 'company', type: 'text', value: this.state.company, onChange: this.updateField })
 	          ),
 	          _react2.default.createElement(
-	            "label",
-	            { className: "form-label" },
-	            "Search by Distributor:",
-	            _react2.default.createElement("input", { name: "distributor", type: "text", value: this.state.distributor, onChange: this.updateField })
+	            'label',
+	            { className: 'form-label' },
+	            'Search by Distributor:',
+	            _react2.default.createElement('input', { name: 'distributor', type: 'text', value: this.state.distributor, onChange: this.updateField })
 	          ),
 	          _react2.default.createElement(
-	            "button",
+	            'button',
 	            { onClick: this.handleClear },
-	            "Clear Filters"
+	            'Clear Filters'
 	          )
 	        )
 	      );
