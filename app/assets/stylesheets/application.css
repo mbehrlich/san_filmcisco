@@ -14,7 +14,38 @@
  *= require_self
  */
 
+ h1 {
+   text-align: center;
+ }
+
  .map {
    height: 500px;
    width: 500px;
+   margin: 0 auto;
+ }
+
+ .container {
+   margin: 0 auto;
+   max-width: 900px;
+   width: 100%;
+ }
+
+ .form {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: space-between;
+   align-items: center;
+ }
+
+ .form-label {
+   margin-bottom: 20px;
+   margin-right: 20px;
+ }
+
+ .form-label input {
+   margin-left: 20px;
+ }
+
+ button {
+   margin-right: 20px;
  }

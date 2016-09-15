@@ -40778,7 +40778,7 @@
 	            map: _this3.map,
 	            locationid: location.id
 	          });
-	          var content = "<div class='info-window'>\n        <h4>Site of '" + location.title + "'</h4>\n        <h5>Released " + location.release_year + "</h5>\n        <h5>Directed by " + location.director + "</h5>\n        <h5>Starring " + location.actor1 + " " + location.actor2 + " " + location.actor3 + "</h5>\n        <h5>Written by " + location.writer + "</h5>\n        <h5>Production company: " + location.company + "</h5>\n        <h5>Distributed by " + location.distributor + "</h5>\n      </div>";
+	          var content = "<div class='info-window'>\n        <h4>Site of '" + location.title + "'</h4>\n        <h5>Released " + (location.release_year ? location.release_year : "") + "</h5>\n        <h5>Directed by " + (location.director ? location.director : "") + "</h5>\n        <h5>Starring " + location.actor1 + " " + (location.actor2 ? ", " + location.actor2 : "") + " " + (location.actor3 ? ", " + location.actor3 : "") + "</h5>\n        <h5>Written by " + (location.writer ? location.writer : "") + "</h5>\n        <h5>Production company: " + (location.company ? location.company : "") + "</h5>\n        <h5>Distributed by " + (location.distributor ? location.distributor : "") + "</h5>\n      </div>";
 	          marker.addListener("click", function () {
 	            _this3.infoWindow.setContent(content);
 	            _this3.infoWindow.open(_this3.map, marker);

@@ -65,12 +65,12 @@ class MarkerManager {
       });
       let content = `<div class='info-window'>
         <h4>Site of '${location.title}'</h4>
-        <h5>Released ${location.release_year}</h5>
-        <h5>Directed by ${location.director}</h5>
-        <h5>Starring ${location.actor1} ${location.actor2} ${location.actor3}</h5>
-        <h5>Written by ${location.writer}</h5>
-        <h5>Production company: ${location.company}</h5>
-        <h5>Distributed by ${location.distributor}</h5>
+        <h5>Released ${location.release_year ? location.release_year : ""}</h5>
+        <h5>Directed by ${location.director ? location.director : ""}</h5>
+        <h5>Starring ${location.actor1} ${location.actor2 ? ", " + location.actor2 : ""} ${location.actor3 ? ", " + location.actor3 : ""}</h5>
+        <h5>Written by ${location.writer ? location.writer : ""}</h5>
+        <h5>Production company: ${location.company ? location.company : ""}</h5>
+        <h5>Distributed by ${location.distributor ? location.distributor : ""}</h5>
       </div>`
       marker.addListener("click", () => {
         this.infoWindow.setContent(content);
