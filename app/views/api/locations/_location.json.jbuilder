@@ -1,0 +1,14 @@
+json.id location.id
+json.title location.title
+json.release_year location.release_year
+json.location location.location
+json.facts location.facts
+json.company location.company
+json.distributor location.distributor
+json.director location.director
+json.writer location.writer
+json.actor1 location.actor1
+json.actor2 location.actor2
+json.actor3 location.actor3
+json.lat location.lat
+json.lng location.lng
