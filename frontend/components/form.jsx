@@ -24,6 +24,7 @@ class Form extends React.Component {
     this.updateField = this.updateField.bind(this);
     this.displayAutocomplete = this.displayAutocomplete.bind(this);
     this.removeAutocomplete = this.removeAutocomplete.bind(this);
+    this.selectLocation = this.selectLocation.bind(this);
   }
 
   handleClear(e) {
@@ -78,34 +79,46 @@ class Form extends React.Component {
   }
 
   removeAutocomplete(e) {
-    document.getElementById(e.target.name).className = "nodisplay-auto";
+    e.persist();
+    setTimeout(() => {
+      document.getElementById(e.target.name).className = "nodisplay-auto";
+    }, 20);
+  }
+
+  selectLocation(e) {
+    let key = e.target.className;
+    let updates = {};
+    updates[key] = e.target.innerHTML;
+    this.setState(updates, () => {
+      this.props.updateFilters(this.state);
+    });
   }
 
   render() {
     let titles = this.props.locations.map((location, idx) => (
-      <li name={location.title} key={"title" + idx}>{location.title}</li>
+      <li name={location.title} key={"title" + idx} onClick={this.selectLocation} className="title">{location.title}</li>
     ));
     let directors = this.props.locations.map((location, idx) => (
-      <li name={location.director} key={"director" + idx}>{location.director}</li>
+      <li name={location.director} key={"director" + idx} onClick={this.selectLocation} className="director">{location.director}</li>
     ));
     let writers = this.props.locations.map((location, idx) => (
-      <li name={location.writer} key={"writer" + idx}>{location.writer}</li>
+      <li name={location.writer} key={"writer" + idx} onClick={this.selectLocation} className="writer">{location.writer}</li>
     ));
     let actors = this.props.locations.map((location, idx) => {
       let act = new RegExp(`${this.state.actor}`, "i")
       if (act.test(location.actor1)) {
-        return (<li name={location.actor1} key={"actor1" + idx}>{location.actor1}</li>)
+        return (<li name={location.actor1} key={"actor1" + idx} onClick={this.selectLocation} className="actor">{location.actor1}</li>)
       } else if (act.test(location.actor2)) {
-        return (<li name={location.actor2} key={"actor2" + idx}>{location.actor2}</li>)
+        return (<li name={location.actor2} key={"actor2" + idx} onClick={this.selectLocation} className="actor">{location.actor2}</li>)
       } else if (act.test(location.actor3)) {
-        return (<li name={location.actor3} key={"actor3" + idx}>{location.actor3}</li>)
+        return (<li name={location.actor3} key={"actor3" + idx} onClick={this.selectLocation} className="actor">{location.actor3}</li>)
       }
     });
     let companies = this.props.locations.map((location, idx) => (
-      <li name={location.company} key={"company" + idx}>{location.company}</li>
+      <li name={location.company} key={"company" + idx} onClick={this.selectLocation} className="company">{location.company}</li>
     ));
     let distributors = this.props.locations.map((location, idx) => (
-      <li name={location.distributor} key={"distributor" + idx}>{location.distributor}</li>
+      <li name={location.distributor} key={"distributor" + idx} onClick={this.selectLocation} className="distributor">{location.distributor}</li>
     ));
 
     return (

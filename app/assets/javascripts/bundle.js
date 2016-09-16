@@ -40236,8 +40236,18 @@
 	      null,
 	      'San Filmcisco'
 	    ),
+	    _react2.default.createElement(
+	      'h3',
+	      null,
+	      'Find filming locations in San Francisco'
+	    ),
 	    _react2.default.createElement(_form_container2.default, null),
-	    _react2.default.createElement(_map_container2.default, null)
+	    _react2.default.createElement(_map_container2.default, null),
+	    _react2.default.createElement(
+	      'footer',
+	      null,
+	      'Matthew Ehrlich'
+	    )
 	  );
 	};
 	
@@ -40376,6 +40386,7 @@
 	    _this.updateField = _this.updateField.bind(_this);
 	    _this.displayAutocomplete = _this.displayAutocomplete.bind(_this);
 	    _this.removeAutocomplete = _this.removeAutocomplete.bind(_this);
+	    _this.selectLocation = _this.selectLocation.bind(_this);
 	    return _this;
 	  }
 	
@@ -40437,52 +40448,67 @@
 	  }, {
 	    key: 'removeAutocomplete',
 	    value: function removeAutocomplete(e) {
-	      document.getElementById(e.target.name).className = "nodisplay-auto";
+	      e.persist();
+	      setTimeout(function () {
+	        document.getElementById(e.target.name).className = "nodisplay-auto";
+	      }, 20);
+	    }
+	  }, {
+	    key: 'selectLocation',
+	    value: function selectLocation(e) {
+	      var _this3 = this;
+	
+	      var key = e.target.className;
+	      var updates = {};
+	      updates[key] = e.target.innerHTML;
+	      this.setState(updates, function () {
+	        _this3.props.updateFilters(_this3.state);
+	      });
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this3 = this;
+	      var _this4 = this;
 	
 	      var titles = this.props.locations.map(function (location, idx) {
 	        return _react2.default.createElement(
 	          'li',
-	          { name: location.title, key: "title" + idx },
+	          { name: location.title, key: "title" + idx, onClick: _this4.selectLocation, className: 'title' },
 	          location.title
 	        );
 	      });
 	      var directors = this.props.locations.map(function (location, idx) {
 	        return _react2.default.createElement(
 	          'li',
-	          { name: location.director, key: "director" + idx },
+	          { name: location.director, key: "director" + idx, onClick: _this4.selectLocation, className: 'director' },
 	          location.director
 	        );
 	      });
 	      var writers = this.props.locations.map(function (location, idx) {
 	        return _react2.default.createElement(
 	          'li',
-	          { name: location.writer, key: "writer" + idx },
+	          { name: location.writer, key: "writer" + idx, onClick: _this4.selectLocation, className: 'writer' },
 	          location.writer
 	        );
 	      });
 	      var actors = this.props.locations.map(function (location, idx) {
-	        var act = new RegExp('' + _this3.state.actor, "i");
+	        var act = new RegExp('' + _this4.state.actor, "i");
 	        if (act.test(location.actor1)) {
 	          return _react2.default.createElement(
 	            'li',
-	            { name: location.actor1, key: "actor1" + idx },
+	            { name: location.actor1, key: "actor1" + idx, onClick: _this4.selectLocation, className: 'actor' },
 	            location.actor1
 	          );
 	        } else if (act.test(location.actor2)) {
 	          return _react2.default.createElement(
 	            'li',
-	            { name: location.actor2, key: "actor2" + idx },
+	            { name: location.actor2, key: "actor2" + idx, onClick: _this4.selectLocation, className: 'actor' },
 	            location.actor2
 	          );
 	        } else if (act.test(location.actor3)) {
 	          return _react2.default.createElement(
 	            'li',
-	            { name: location.actor3, key: "actor3" + idx },
+	            { name: location.actor3, key: "actor3" + idx, onClick: _this4.selectLocation, className: 'actor' },
 	            location.actor3
 	          );
 	        }
@@ -40490,14 +40516,14 @@
 	      var companies = this.props.locations.map(function (location, idx) {
 	        return _react2.default.createElement(
 	          'li',
-	          { name: location.company, key: "company" + idx },
+	          { name: location.company, key: "company" + idx, onClick: _this4.selectLocation, className: 'company' },
 	          location.company
 	        );
 	      });
 	      var distributors = this.props.locations.map(function (location, idx) {
 	        return _react2.default.createElement(
 	          'li',
-	          { name: location.distributor, key: "distributor" + idx },
+	          { name: location.distributor, key: "distributor" + idx, onClick: _this4.selectLocation, className: 'distributor' },
 	          location.distributor
 	        );
 	      });
@@ -40874,8 +40900,8 @@
 	    value: function _createMarkerFromLocation(location) {
 	      var _this3 = this;
 	
-	      var sw = new google.maps.LatLng(37.686859, -122.544045);
-	      var ne = new google.maps.LatLng(37.834784, -122.344575);
+	      var sw = new google.maps.LatLng(37.341063, -123.069827);
+	      var ne = new google.maps.LatLng(37.992210, -121.869570);
 	      var bounds = new google.maps.LatLngBounds(sw, ne);
 	      if (location.lat && location.lng) {
 	        (function () {
@@ -40913,7 +40939,7 @@
 	                    map: _this3.map,
 	                    locationid: location.id
 	                  });
-	                  var content = "<div class='info-window'>\n              <h4>Site of '" + location.title + "'</h4>\n              <h5>Released " + location.release_year + "</h5>\n              <h5>Directed by " + location.director + "</h5>\n              <h5>Starring " + location.actor1 + (", " + location.actor2) + (", " + location.actor3) + "</h5>\n              <h5>Written by " + location.writer + "</h5>\n              <h5>Production company: " + location.company + "</h5>\n              <h5>Distributed by " + location.distributor + "</h5>\n              </div>";
+	                  var content = "<div class='info-window'>\n                <h4>Site of '" + location.title + "'</h4>\n                <h5>Released " + (location.release_year ? location.release_year : "") + "</h5>\n                <h5>Directed by " + (location.director ? location.director : "") + "</h5>\n                <h5>Starring " + location.actor1 + " " + (location.actor2 ? ", " + location.actor2 : "") + " " + (location.actor3 ? ", " + location.actor3 : "") + "</h5>\n                <h5>Written by " + (location.writer ? location.writer : "") + "</h5>\n                <h5>Production company: " + (location.company ? location.company : "") + "</h5>\n                <h5>Distributed by " + (location.distributor ? location.distributor : "") + "</h5>\n              </div>";
 	                  marker.addListener("click", function () {
 	                    _this3.infoWindow.setContent(content);
 	                    _this3.infoWindow.open(_this3.map, marker);

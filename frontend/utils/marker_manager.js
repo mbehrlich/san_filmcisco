@@ -54,8 +54,8 @@ class MarkerManager {
   }
 
   _createMarkerFromLocation(location) {
-    let sw = new google.maps.LatLng(37.686859, -122.544045);
-    let ne = new google.maps.LatLng(37.834784, -122.344575);
+    let sw = new google.maps.LatLng(37.341063, -123.069827);
+    let ne = new google.maps.LatLng(37.992210, -121.869570);
     let bounds = new google.maps.LatLngBounds(sw, ne);
     if (location.lat && location.lng) {
       let marker = new google.maps.Marker({
@@ -103,13 +103,13 @@ class MarkerManager {
                 locationid: location.id
               });
               let content = `<div class='info-window'>
-              <h4>Site of '${location.title}'</h4>
-              <h5>Released ${location.release_year}</h5>
-              <h5>Directed by ${location.director}</h5>
-              <h5>Starring ${location.actor1}${", " + location.actor2}${", " + location.actor3}</h5>
-              <h5>Written by ${location.writer}</h5>
-              <h5>Production company: ${location.company}</h5>
-              <h5>Distributed by ${location.distributor}</h5>
+                <h4>Site of '${location.title}'</h4>
+                <h5>Released ${location.release_year ? location.release_year : ""}</h5>
+                <h5>Directed by ${location.director ? location.director : ""}</h5>
+                <h5>Starring ${location.actor1} ${location.actor2 ? ", " + location.actor2 : ""} ${location.actor3 ? ", " + location.actor3 : ""}</h5>
+                <h5>Written by ${location.writer ? location.writer : ""}</h5>
+                <h5>Production company: ${location.company ? location.company : ""}</h5>
+                <h5>Distributed by ${location.distributor ? location.distributor : ""}</h5>
               </div>`
               marker.addListener("click", () => {
                 this.infoWindow.setContent(content);
