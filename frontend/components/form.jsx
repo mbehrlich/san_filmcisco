@@ -79,10 +79,10 @@ class Form extends React.Component {
   }
 
   removeAutocomplete(e) {
-    e.persist();
-    setTimeout(() => {
-      document.getElementById(e.target.name).className = "nodisplay-auto";
-    }, 20);
+    let name = e.target.name;
+    window.setTimeout(() => {
+      document.getElementById(name).className = "nodisplay-auto";
+    }, 300);
   }
 
   selectLocation(e) {

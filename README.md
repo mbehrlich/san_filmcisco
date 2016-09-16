@@ -2,7 +2,7 @@
 
 ## Installation instructions:
 
-type the following commands from the san_filmcisco folder:
+type the following commands into the console from the san_filmcisco folder:
 
 ```
 bundle install
