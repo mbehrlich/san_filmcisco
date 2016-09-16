@@ -2,7 +2,7 @@
 
 ## Installation instructions:
 
-type the following commands:
+type the following commands from the san_filmcisco folder:
 
 ```
 bundle install
@@ -44,5 +44,3 @@ I experimented at first with the 'react-autocomplete' package, but found it to b
 unwieldy. Instead, I wrote one myself. The only drawback is that it currently does
 not let you use the arrows to select options, and you must instead click on them.
 If I had more time to continue this project, that would be the next thing I'd implement.
-
-Best aspects:
