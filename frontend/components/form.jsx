@@ -1,4 +1,5 @@
 import React from 'react';
+// import Autocomplete from 'react-autocomplete';
 import { isEqual } from 'lodash';
 
 class Form extends React.Component {
@@ -21,6 +22,8 @@ class Form extends React.Component {
     }, 5);
     this.handleClear = this.handleClear.bind(this);
     this.updateField = this.updateField.bind(this);
+    this.displayAutocomplete = this.displayAutocomplete.bind(this);
+    this.removeAutocomplete = this.removeAutocomplete.bind(this);
   }
 
   handleClear(e) {
@@ -63,44 +66,97 @@ class Form extends React.Component {
               this.props.updateFilters(this.state);
             }
           }
-        }, 210)
+        }, 210);
       // } else {
         // this.props.updateFilters(this.state);
       // }
     });
   }
 
+  displayAutocomplete(e) {
+    document.getElementById(e.target.name).className = "display-auto";
+  }
+
+  removeAutocomplete(e) {
+    document.getElementById(e.target.name).className = "nodisplay-auto";
+  }
+
   render() {
+    let titles = this.props.locations.map((location, idx) => (
+      <li name={location.title} key={"title" + idx}>{location.title}</li>
+    ));
+    let directors = this.props.locations.map((location, idx) => (
+      <li name={location.director} key={"director" + idx}>{location.director}</li>
+    ));
+    let writers = this.props.locations.map((location, idx) => (
+      <li name={location.writer} key={"writer" + idx}>{location.writer}</li>
+    ));
+    let actors = this.props.locations.map((location, idx) => {
+      let act = new RegExp(`${this.state.actor}`, "i")
+      if (act.test(location.actor1)) {
+        return (<li name={location.actor1} key={"actor1" + idx}>{location.actor1}</li>)
+      } else if (act.test(location.actor2)) {
+        return (<li name={location.actor2} key={"actor2" + idx}>{location.actor2}</li>)
+      } else if (act.test(location.actor3)) {
+        return (<li name={location.actor3} key={"actor3" + idx}>{location.actor3}</li>)
+      }
+    });
+    let companies = this.props.locations.map((location, idx) => (
+      <li name={location.company} key={"company" + idx}>{location.company}</li>
+    ));
+    let distributors = this.props.locations.map((location, idx) => (
+      <li name={location.distributor} key={"distributor" + idx}>{location.distributor}</li>
+    ));
+
     return (
       <div className="form-container">
         <form className="form">
           <label className="form-label">
             Search by Title:
-            <input name="title" type="text" value={this.state.title} onChange={this.updateField} />
+            <input name="title" type="text" value={this.state.title} onChange={this.updateField} onFocus={this.displayAutocomplete} onBlur={this.removeAutocomplete} />
+            <ul id="title" className="nodisplay-auto">
+              {titles}
+            </ul>
           </label>
           <label className="form-label">
             Search by Release Year:
             <input name="release_year" type="number" value={this.state.release_year} onChange={this.updateField} />
+
           </label>
           <label className="form-label">
             Search by Director:
-            <input name="director" type="text" value={this.state.director} onChange={this.updateField} />
+            <input name="director" type="text" value={this.state.director} onChange={this.updateField} onFocus={this.displayAutocomplete} onBlur={this.removeAutocomplete} />
+            <ul id="director" className="nodisplay-auto">
+              {directors}
+            </ul>
           </label>
           <label className="form-label">
             Search by Actor:
-            <input name="actor" type="text" value={this.state.actor} onChange={this.updateField} />
+            <input name="actor" type="text" value={this.state.actor} onChange={this.updateField} onFocus={this.displayAutocomplete} onBlur={this.removeAutocomplete} />
+            <ul id="actor" className="nodisplay-auto">
+              {actors}
+            </ul>
           </label>
           <label className="form-label">
             Search by Writer:
-            <input name="writer" type="text" value={this.state.writer} onChange={this.updateField} />
+            <input name="writer" type="text" value={this.state.writer} onChange={this.updateField} onFocus={this.displayAutocomplete} onBlur={this.removeAutocomplete}/>
+            <ul id="writer" className="nodisplay-auto">
+              {writers}
+            </ul>
           </label>
           <label className="form-label">
             Search by Production Company:
-            <input name="company" type="text" value={this.state.company} onChange={this.updateField} />
+            <input name="company" type="text" value={this.state.company} onChange={this.updateField} onFocus={this.displayAutocomplete} onBlur={this.removeAutocomplete}/>
+            <ul id="company" className="nodisplay-auto">
+              {companies}
+            </ul>
           </label>
           <label className="form-label">
             Search by Distributor:
-            <input name="distributor" type="text" value={this.state.distributor} onChange={this.updateField} />
+            <input name="distributor" type="text" value={this.state.distributor} onChange={this.updateField} onFocus={this.displayAutocomplete} onBlur={this.removeAutocomplete}/>
+            <ul id="distributor" className="nodisplay-auto">
+              {distributors}
+            </ul>
           </label>
           <button onClick={this.handleClear}>Clear Filters</button>
         </form>

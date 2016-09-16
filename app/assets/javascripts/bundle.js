@@ -40264,7 +40264,9 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var mapStateToProps = function mapStateToProps(state) {
-	  return {};
+	  return {
+	    locations: state.locations
+	  };
 	};
 	
 	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
@@ -40278,7 +40280,7 @@
 	  };
 	};
 	
-	exports.default = (0, _reactRedux.connect)(null, mapDispatchToProps)(_form2.default);
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_form2.default);
 
 /***/ },
 /* 212 */
@@ -40344,6 +40346,8 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	// import Autocomplete from 'react-autocomplete';
+	
 	
 	var Form = function (_React$Component) {
 	  _inherits(Form, _React$Component);
@@ -40370,6 +40374,8 @@
 	    }, 5);
 	    _this.handleClear = _this.handleClear.bind(_this);
 	    _this.updateField = _this.updateField.bind(_this);
+	    _this.displayAutocomplete = _this.displayAutocomplete.bind(_this);
+	    _this.removeAutocomplete = _this.removeAutocomplete.bind(_this);
 	    return _this;
 	  }
 	
@@ -40424,8 +40430,78 @@
 	      });
 	    }
 	  }, {
+	    key: 'displayAutocomplete',
+	    value: function displayAutocomplete(e) {
+	      document.getElementById(e.target.name).className = "display-auto";
+	    }
+	  }, {
+	    key: 'removeAutocomplete',
+	    value: function removeAutocomplete(e) {
+	      document.getElementById(e.target.name).className = "nodisplay-auto";
+	    }
+	  }, {
 	    key: 'render',
 	    value: function render() {
+	      var _this3 = this;
+	
+	      var titles = this.props.locations.map(function (location, idx) {
+	        return _react2.default.createElement(
+	          'li',
+	          { name: location.title, key: "title" + idx },
+	          location.title
+	        );
+	      });
+	      var directors = this.props.locations.map(function (location, idx) {
+	        return _react2.default.createElement(
+	          'li',
+	          { name: location.director, key: "director" + idx },
+	          location.director
+	        );
+	      });
+	      var writers = this.props.locations.map(function (location, idx) {
+	        return _react2.default.createElement(
+	          'li',
+	          { name: location.writer, key: "writer" + idx },
+	          location.writer
+	        );
+	      });
+	      var actors = this.props.locations.map(function (location, idx) {
+	        var act = new RegExp('' + _this3.state.actor, "i");
+	        if (act.test(location.actor1)) {
+	          return _react2.default.createElement(
+	            'li',
+	            { name: location.actor1, key: "actor1" + idx },
+	            location.actor1
+	          );
+	        } else if (act.test(location.actor2)) {
+	          return _react2.default.createElement(
+	            'li',
+	            { name: location.actor2, key: "actor2" + idx },
+	            location.actor2
+	          );
+	        } else if (act.test(location.actor3)) {
+	          return _react2.default.createElement(
+	            'li',
+	            { name: location.actor3, key: "actor3" + idx },
+	            location.actor3
+	          );
+	        }
+	      });
+	      var companies = this.props.locations.map(function (location, idx) {
+	        return _react2.default.createElement(
+	          'li',
+	          { name: location.company, key: "company" + idx },
+	          location.company
+	        );
+	      });
+	      var distributors = this.props.locations.map(function (location, idx) {
+	        return _react2.default.createElement(
+	          'li',
+	          { name: location.distributor, key: "distributor" + idx },
+	          location.distributor
+	        );
+	      });
+	
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'form-container' },
@@ -40436,7 +40512,12 @@
 	            'label',
 	            { className: 'form-label' },
 	            'Search by Title:',
-	            _react2.default.createElement('input', { name: 'title', type: 'text', value: this.state.title, onChange: this.updateField })
+	            _react2.default.createElement('input', { name: 'title', type: 'text', value: this.state.title, onChange: this.updateField, onFocus: this.displayAutocomplete, onBlur: this.removeAutocomplete }),
+	            _react2.default.createElement(
+	              'ul',
+	              { id: 'title', className: 'nodisplay-auto' },
+	              titles
+	            )
 	          ),
 	          _react2.default.createElement(
 	            'label',
@@ -40448,31 +40529,56 @@
 	            'label',
 	            { className: 'form-label' },
 	            'Search by Director:',
-	            _react2.default.createElement('input', { name: 'director', type: 'text', value: this.state.director, onChange: this.updateField })
+	            _react2.default.createElement('input', { name: 'director', type: 'text', value: this.state.director, onChange: this.updateField, onFocus: this.displayAutocomplete, onBlur: this.removeAutocomplete }),
+	            _react2.default.createElement(
+	              'ul',
+	              { id: 'director', className: 'nodisplay-auto' },
+	              directors
+	            )
 	          ),
 	          _react2.default.createElement(
 	            'label',
 	            { className: 'form-label' },
 	            'Search by Actor:',
-	            _react2.default.createElement('input', { name: 'actor', type: 'text', value: this.state.actor, onChange: this.updateField })
+	            _react2.default.createElement('input', { name: 'actor', type: 'text', value: this.state.actor, onChange: this.updateField, onFocus: this.displayAutocomplete, onBlur: this.removeAutocomplete }),
+	            _react2.default.createElement(
+	              'ul',
+	              { id: 'actor', className: 'nodisplay-auto' },
+	              actors
+	            )
 	          ),
 	          _react2.default.createElement(
 	            'label',
 	            { className: 'form-label' },
 	            'Search by Writer:',
-	            _react2.default.createElement('input', { name: 'writer', type: 'text', value: this.state.writer, onChange: this.updateField })
+	            _react2.default.createElement('input', { name: 'writer', type: 'text', value: this.state.writer, onChange: this.updateField, onFocus: this.displayAutocomplete, onBlur: this.removeAutocomplete }),
+	            _react2.default.createElement(
+	              'ul',
+	              { id: 'writer', className: 'nodisplay-auto' },
+	              writers
+	            )
 	          ),
 	          _react2.default.createElement(
 	            'label',
 	            { className: 'form-label' },
 	            'Search by Production Company:',
-	            _react2.default.createElement('input', { name: 'company', type: 'text', value: this.state.company, onChange: this.updateField })
+	            _react2.default.createElement('input', { name: 'company', type: 'text', value: this.state.company, onChange: this.updateField, onFocus: this.displayAutocomplete, onBlur: this.removeAutocomplete }),
+	            _react2.default.createElement(
+	              'ul',
+	              { id: 'company', className: 'nodisplay-auto' },
+	              companies
+	            )
 	          ),
 	          _react2.default.createElement(
 	            'label',
 	            { className: 'form-label' },
 	            'Search by Distributor:',
-	            _react2.default.createElement('input', { name: 'distributor', type: 'text', value: this.state.distributor, onChange: this.updateField })
+	            _react2.default.createElement('input', { name: 'distributor', type: 'text', value: this.state.distributor, onChange: this.updateField, onFocus: this.displayAutocomplete, onBlur: this.removeAutocomplete }),
+	            _react2.default.createElement(
+	              'ul',
+	              { id: 'distributor', className: 'nodisplay-auto' },
+	              distributors
+	            )
 	          ),
 	          _react2.default.createElement(
 	            'button',

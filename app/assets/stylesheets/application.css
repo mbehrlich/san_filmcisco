@@ -40,6 +40,7 @@
  .form-label {
    margin-bottom: 20px;
    margin-right: 20px;
+   position: relative;
  }
 
  .form-label input {
@@ -49,3 +50,40 @@
  button {
    margin-right: 20px;
  }
+
+.display-auto {
+  display: block;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  background-color: white;
+  border: 1px solid black;
+  z-index: 1;
+  right: 0;
+}
+
+.display-auto li {
+  cursor: pointer;
+  display: block;
+  list-style: none;
+  width: 100%;
+  padding: 5px;
+
+  margin: 0;
+}
+
+.display-auto li:hover {
+  background-color: blue;
+  color: white;
+}
+
+.display-auto li:active {
+  background-color: black;
+  color: white;
+}
+
+.nodisplay-auto {
+  display: none;
+  margin: 0;
+
+}
